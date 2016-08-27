@@ -1,23 +1,21 @@
 package uk.fls.h2n0.main.core.tiles;
 
+import java.util.Arrays;
+
 import fls.engine.main.util.Renderer;
 import uk.fls.h2n0.main.core.World;
 
-public class FloorTile extends Tile {
+public class VoidTile extends Tile {
 
-	int[] d = null;
+	private int[] data = null;
+	
 	@Override
 	public void render(World w, Renderer r, int dx, int dy, int tx, int ty) {
-		
-		
-		d = sp.getData(1);
-		boolean above = w.getTile(tx, ty-1) == Tile.floor;
-		boolean below = w.getTile(tx, ty+1) == Tile.floor;
-		
-		if(below && !above){
-			d = sp.getData(2);
+		if(this.data == null){
+			this.data = new int[8 * 8];
+			Arrays.fill(this.data, 0);
 		}
-		r.renderSection(d, dx, dy, 8);
+		r.renderSection(data, dx, dy, 8);
 	}
 
 	@Override

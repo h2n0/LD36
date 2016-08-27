@@ -8,10 +8,9 @@ import uk.fls.h2n0.main.core.tiles.Tile;
 public class World {
 
 	
-	public int[] tiles;
+	public Tile[] tiles;
 	public byte[] data;
-	private int w;
-	private int h;
+	public int w, h;
 	
 	public World(){
 		loadWorld();
@@ -19,6 +18,7 @@ public class World {
 	
 	public void setTile(int x, int y, Tile nt){
 		if(!isValid(x, y))return;
+		this.tiles[x + y * this.w] = nt;
 	}
 	
 	public void setData(int x, int y, int nv){
@@ -31,13 +31,18 @@ public class World {
 		else return true;
 	}
 	
+	public Tile getTile(int x, int y){
+		if(!isValid(x,y))return Tile.none;
+		return this.tiles[x + y * this.w];
+	}
+	
 	
 	public void loadWorld(){
 		BufferedImage img = new SplitImage("/level.png").load();
 		this.w = img.getWidth();
 		this.h = img.getHeight();
 		int[] pixels = new int[w * h];
-		this.tiles = new int[w * h];
+		this.tiles = new Tile[w * h];
 		this.data = new byte[w * h];
 		img.getRGB(0, 0, w, h, pixels, 0, h);
 		for(int i = 0; i < pixels.length; i++){
@@ -48,7 +53,9 @@ public class World {
 			int ty = i / this.w;
 			
 			if(c == 0xFFFFFF){
-				//setTile(tx, ty, Tile.floor);
+				setTile(tx, ty, Tile.floor);
+			}else{
+				setTile(tx, ty, Tile.none);
 			}
 		}
 	}

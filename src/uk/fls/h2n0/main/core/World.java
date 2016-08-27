@@ -3,6 +3,7 @@ package uk.fls.h2n0.main.core;
 import java.awt.image.BufferedImage;
 
 import fls.engine.main.art.SplitImage;
+import uk.fls.h2n0.main.core.tiles.Tile;
 
 public class World {
 
@@ -47,7 +48,7 @@ public class World {
 			int ty = i / this.w;
 			
 			if(c == 0xFFFFFF){
-				
+				//setTile(tx, ty, Tile.floor);
 			}
 		}
 	}

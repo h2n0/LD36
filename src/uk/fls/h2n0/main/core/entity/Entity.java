@@ -1,9 +1,10 @@
-package uk.fls.h2n0.main.core;
+package uk.fls.h2n0.main.core.entity;
 
 import fls.engine.main.io.FileIO;
 import fls.engine.main.util.Point;
 import fls.engine.main.util.Renderer;
 import fls.engine.main.util.rendertools.SpriteParser;
+import uk.fls.h2n0.main.core.World;
 import uk.fls.h2n0.main.core.tiles.Tile;
 
 public abstract class Entity {
@@ -12,6 +13,7 @@ public abstract class Entity {
 	protected int[] frameData;
 	protected float speed = 1f;
 	public World world;
+	protected boolean alive = true;
 	
 	protected Point targetPoint = Point.zero;
 	protected SpriteParser sp = new SpriteParser(FileIO.instance.readInternalFile("/entitys/data1.art"));
@@ -49,5 +51,9 @@ public abstract class Entity {
 
 	public Point getPos() {
 		return this.pos;
+	}
+	
+	public boolean isAlive(){
+		return this.alive;
 	}
 }

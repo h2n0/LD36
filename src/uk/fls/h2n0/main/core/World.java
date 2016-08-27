@@ -3,11 +3,16 @@ package uk.fls.h2n0.main.core;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import fls.engine.main.art.SplitImage;
 import fls.engine.main.util.Camera;
 import fls.engine.main.util.Renderer;
+import uk.fls.h2n0.main.core.entity.Decoration;
+import uk.fls.h2n0.main.core.entity.Entity;
+import uk.fls.h2n0.main.core.entity.Gem;
+import uk.fls.h2n0.main.core.entity.Player;
 import uk.fls.h2n0.main.core.tiles.Tile;
 
 public class World {
@@ -54,8 +59,11 @@ public class World {
 	}
 
 	public void update() {
-		for (Entity e : entitys) {
+		Iterator<Entity> it = this.entitys.iterator();
+		while(it.hasNext()){
+			Entity e = it.next();
 			e.update();
+			if(!e.isAlive())it.remove();
 		}
 	}
 
@@ -105,10 +113,15 @@ public class World {
 			}else if(c == 0x0000FF){
 				setTile(tx, ty, Tile.floor);
 				addEntity(new Gem(tx * 8, ty * 8));
+			}else if(c == 0xAAAA00){// Breakable object
+				setTile(tx, ty, Tile.floor);
+				addEntity(new Decoration(tx * 8, ty * 8));
 			}else if(c == 0xFFFF00){// Player spawn section
 				setTile(tx, ty, Tile.floor);
 				this.px = tx * 8;
 				this.py = ty * 8;
+			}else if(c == 0x00FF00){
+				setTile(tx, ty, Tile.door);
 			}
 		}
 
@@ -129,5 +142,24 @@ public class World {
 				}
 			}
 		}
+	}
+	
+	public List<Entity> getEntitysAround(Entity checker){
+		return this.getEntitysAround(checker, 10);
+	}
+	
+	public List<Entity> getEntitysAround(Entity checker, int r){
+		List<Entity> res = new ArrayList<Entity>();
+		for(Entity e : entitys){
+			if(e == checker)continue;
+			if(e.getPos().dist(checker.getPos()) < r * r){
+				res.add(e);
+			}
+		}
+		return res;
+	}
+	
+	public Player getPlayer(){
+		return new Player(this.px, this.py);
 	}
 }

@@ -11,6 +11,7 @@ public abstract class Tile {
 	public static Tile none = new VoidTile();
 	public static Tile floor = new FloorTile();
 	public static Tile wall = new WallTile();
+	public static Tile door = new DoorTile();
 
 	public boolean blocksMovment;
 	

@@ -14,7 +14,7 @@ public class LD37 extends Init{
 	public LD37(){
 		super("LD 37 Entry", w * s, h * s);
 		useCustomBufferedImage(w, h, false);
-		setInput(new Input(this, Input.KEYS));
+		setInput(new Input(this, Input.KEYS, Input.CONTROLLER));
 		setScreen(new GameScreen());
 	}
 	

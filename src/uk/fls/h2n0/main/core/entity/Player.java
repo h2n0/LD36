@@ -1,4 +1,6 @@
-package uk.fls.h2n0.main.core;
+package uk.fls.h2n0.main.core.entity;
+
+import java.util.List;
 
 import fls.engine.main.util.Point;
 import fls.engine.main.util.Renderer;
@@ -12,6 +14,8 @@ public class Player extends Entity {
 	private Animation anim;
 
 	boolean xFlip;
+	public int gemsFound;
+	public int score;
 
 	public Player(int x, int y) {
 		this.frameData = this.sp.getData(0);
@@ -22,6 +26,7 @@ public class Player extends Entity {
 		this.am.addAnimation("walkD", new Animation(this.sp, Animation.XY_STYLE, 0, 2, 1, 2, 2, 2, 1, 2));
 		this.anim = this.am.getAnimation("walkLR");
 		this.xFlip = false;
+		this.speed = 0.75f;
 	}
 
 	@Override
@@ -31,7 +36,24 @@ public class Player extends Entity {
 
 	@Override
 	public void update() {
-		this.speed = 0.75f;
+		List<Entity> ents = this.world.getEntitysAround(this);
+		for(Entity e : ents){
+			if(e instanceof ScoreGem){
+				ScoreGem g = (ScoreGem)e;
+				if(g.pos.dist(this.pos) > 2 * 2){
+					g.floatToward(pos);
+				}else{
+					g.alive = false;
+					this.score += 10 * g.getWeight();
+				}
+			}else if(e instanceof Gem){
+				Gem g = (Gem)e;
+				if(g.pos.dist(this.pos) < 16 * 16){
+					g.alive = false;
+					this.gemsFound++;
+				}
+			}
+		}
 	}
 
 	public void move(int x, int y) {
@@ -62,7 +84,7 @@ public class Player extends Entity {
 	}
 	
 	public void action(){
-		
+		this.world.addEntity(new ScoreGem(this.pos.getIX(), this.pos.getIY() - 8));
 	}
 
 }

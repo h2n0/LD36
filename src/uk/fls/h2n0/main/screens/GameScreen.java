@@ -40,6 +40,8 @@ public class GameScreen extends Screen {
 		if(this.input.isKeyHeld(this.input.a))xOff--;
 		else if(this.input.isKeyHeld(this.input.d))xOff++;
 		
+		if(this.input.isKeyPressed(this.input.space))this.p.action();
+		
 		
 		this.p.move(xOff, yOff);
 		

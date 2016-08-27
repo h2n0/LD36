@@ -3,6 +3,7 @@ package uk.fls.h2n0.main.core;
 import fls.engine.main.util.Point;
 import fls.engine.main.util.Renderer;
 import uk.fls.h2n0.main.util.Animation;
+import uk.fls.h2n0.main.util.AnimationManager;
 
 public class Player extends Entity {
 
@@ -26,7 +27,6 @@ public class Player extends Entity {
 	@Override
 	public void render(Renderer r) {
 		r.renderSection(frameData, this.pos.getIX(), this.pos.getIY(), 8, this.xFlip ? r.xFlip : 0);
-		r.setPixel(this.targetPoint.getIX(), this.targetPoint.getIY(), 255 << 16);
 	}
 
 	@Override
@@ -59,6 +59,10 @@ public class Player extends Entity {
 			this.anim.nextFrame();
 			this.frameData = this.anim.getFrame();
 		}
+	}
+	
+	public void action(){
+		
 	}
 
 }

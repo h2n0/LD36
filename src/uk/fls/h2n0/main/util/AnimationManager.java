@@ -1,8 +1,6 @@
-package uk.fls.h2n0.main.core;
+package uk.fls.h2n0.main.util;
 
 import java.util.HashMap;
-
-import uk.fls.h2n0.main.util.Animation;
 
 public class AnimationManager {
 

@@ -22,7 +22,6 @@ public class World {
 
 	public World() {
 		loadWorld();
-		this.entitys = new ArrayList<Entity>();
 	}
 
 	public void setTile(int x, int y, Tile nt) {
@@ -91,6 +90,7 @@ public class World {
 		int[] pixels = new int[w * h];
 		this.tiles = new Tile[w * h];
 		this.data = new byte[w * h];
+		this.entitys = new ArrayList<Entity>();
 		img.getRGB(0, 0, w, h, pixels, 0, h);
 		for (int i = 0; i < pixels.length; i++) {
 			int c = (pixels[i] & 0xFFFFFF);
@@ -102,6 +102,9 @@ public class World {
 
 			if (c == 0xFFFFFF) {// Basic floor tile
 				setTile(tx, ty, Tile.floor);
+			}else if(c == 0x0000FF){
+				setTile(tx, ty, Tile.floor);
+				addEntity(new Gem(tx * 8, ty * 8));
 			}else if(c == 0xFFFF00){// Player spawn section
 				setTile(tx, ty, Tile.floor);
 				this.px = tx * 8;

@@ -1,0 +1,22 @@
+package uk.fls.h2n0.main;
+
+import fls.engine.main.Init;
+import fls.engine.main.input.Input;
+
+@SuppressWarnings("serial")
+public class LD37 extends Init{
+
+	public static int w = 160;
+	public static int h = 144;
+	public static int s = 3;
+	
+	public LD37(){
+		super("LD 37 Entry", w * s, h * s);
+		useCustomBufferedImage(w, h, false);
+		setInput(new Input(this, Input.KEYS));
+	}
+	
+	public static void main(String[] args){
+		new LD37().start();
+	}
+}

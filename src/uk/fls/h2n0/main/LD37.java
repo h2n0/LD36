@@ -2,6 +2,7 @@ package uk.fls.h2n0.main;
 
 import fls.engine.main.Init;
 import fls.engine.main.input.Input;
+import uk.fls.h2n0.main.screens.GameScreen;
 
 @SuppressWarnings("serial")
 public class LD37 extends Init{
@@ -14,6 +15,7 @@ public class LD37 extends Init{
 		super("LD 37 Entry", w * s, h * s);
 		useCustomBufferedImage(w, h, false);
 		setInput(new Input(this, Input.KEYS));
+		setScreen(new GameScreen());
 	}
 	
 	public static void main(String[] args){

@@ -7,7 +7,6 @@ import uk.fls.h2n0.main.util.Animation;
 public class Player extends Entity {
 
 	private int steps;
-	private int frame;
 	private AnimationManager am;
 	private Animation anim;
 
@@ -27,6 +26,7 @@ public class Player extends Entity {
 	@Override
 	public void render(Renderer r) {
 		r.renderSection(frameData, this.pos.getIX(), this.pos.getIY(), 8, this.xFlip ? r.xFlip : 0);
+		r.setPixel(this.targetPoint.getIX(), this.targetPoint.getIY(), 255 << 16);
 	}
 
 	@Override

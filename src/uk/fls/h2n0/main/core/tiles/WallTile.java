@@ -7,6 +7,10 @@ public class WallTile extends Tile {
 
 	
 	int[] d = null;
+	
+	public WallTile() {
+		this.blocksMovment = true;
+	}
 	@Override
 	public void render(World w, Renderer r, int dx, int dy, int tx, int ty) {
 		if(d == null){

@@ -2,11 +2,11 @@ package uk.fls.h2n0.main.core;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fls.engine.main.art.SplitImage;
 import fls.engine.main.util.Camera;
-import fls.engine.main.util.Point;
 import fls.engine.main.util.Renderer;
 import uk.fls.h2n0.main.core.tiles.Tile;
 
@@ -15,6 +15,8 @@ public class World {
 	public Tile[] tiles;
 	public byte[] data;
 	public int w, h;
+	
+	private int px, py;
 
 	private List<Entity> entitys;
 
@@ -43,8 +45,7 @@ public class World {
 	}
 
 	public Tile getTile(int x, int y) {
-		if (!isValid(x, y))
-			return Tile.none;
+		if (!isValid(x, y))return Tile.none;
 		return this.tiles[x + y * this.w];
 	}
 
@@ -65,15 +66,15 @@ public class World {
 		int mx = cam.pos.getIX() / 8;
 		int max = cam.w;
 
+		
+		int[] d = new int[8 * 8];
+		Arrays.fill(d, 255 << 16);
 		int my = cam.pos.getIY() / 8;
 		int may = cam.w;
 		for (int x = mx - 1; x <= mx + max; x++) {
 			for (int y = my - 1; y <= my + may; y++) {
 				Tile t = getTile(x, y);
-				if (t != null)
-					t.render(this, r, x * 8, y * 8, x, y);
-				else
-					Tile.none.render(this, r, x * 8, y * 8, x, y);
+				if (t != null)t.render(this, r, x * 8, y * 8, x, y);
 			}
 		}
 
@@ -93,16 +94,18 @@ public class World {
 		img.getRGB(0, 0, w, h, pixels, 0, h);
 		for (int i = 0; i < pixels.length; i++) {
 			int c = (pixels[i] & 0xFFFFFF);
-			if (c == 0)
-				continue;
 
 			int tx = i % this.w;
 			int ty = i / this.w;
+			
+			setTile(tx, ty, Tile.none);
 
-			if (c == 0xFFFFFF) {
+			if (c == 0xFFFFFF) {// Basic floor tile
 				setTile(tx, ty, Tile.floor);
-			} else {
-				setTile(tx, ty, Tile.none);
+			}else if(c == 0xFFFF00){// Player spawn section
+				setTile(tx, ty, Tile.floor);
+				this.px = tx * 8;
+				this.py = ty * 8;
 			}
 		}
 

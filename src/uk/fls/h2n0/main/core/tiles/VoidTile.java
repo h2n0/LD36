@@ -9,6 +9,10 @@ public class VoidTile extends Tile {
 
 	private int[] data = null;
 	
+	public VoidTile() {
+		this.blocksMovment = true;
+	}
+	
 	@Override
 	public void render(World w, Renderer r, int dx, int dy, int tx, int ty) {
 		if(this.data == null){

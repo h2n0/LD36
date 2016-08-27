@@ -10,6 +10,7 @@ public abstract class Tile {
 
 	public static Tile none = new VoidTile();
 	public static Tile floor = new FloorTile();
+	public static Tile wall = new WallTile();
 
 	public boolean blocksMovment = false;
 	public SpriteParser sp = new SpriteParser(FileIO.instance.readInternalFile("/tiles/data1.art"));

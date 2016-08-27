@@ -52,6 +52,7 @@ public class Player extends Entity {
 			else
 				xFlip = false;
 		}
+		
 		super.move(x, y);
 		this.steps++;
 		if (steps % 12 == 0) {

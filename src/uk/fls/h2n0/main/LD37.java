@@ -9,7 +9,7 @@ public class LD37 extends Init{
 
 	public static int w = 160;
 	public static int h = 144;
-	public static int s = 4;
+	public static int s = 3;
 	
 	public LD37(){
 		super("LD 37 Entry", w * s, h * s);

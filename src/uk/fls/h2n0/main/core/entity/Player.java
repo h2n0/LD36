@@ -62,7 +62,7 @@ public class Player extends Entity {
 
 		if (y < 0) {
 			this.anim = this.am.getAnimation("walkU");
-		}else if(y > 0){
+		}else if(y > 0){	
 			this.anim = this.am.getAnimation("walkD");
 		}else if(x > 0 || x < 0){
 			this.anim = this.am.getAnimation("walkLR");

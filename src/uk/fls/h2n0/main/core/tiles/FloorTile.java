@@ -8,15 +8,7 @@ public class FloorTile extends Tile {
 	int[] d = null;
 	@Override
 	public void render(World w, Renderer r, int dx, int dy, int tx, int ty) {
-		
-		
-		d = sp.getData(1);
-		boolean above = w.getTile(tx, ty-1) == Tile.floor;
-		boolean below = w.getTile(tx, ty+1) == Tile.floor;
-		
-		if(below && !above){
-			d = sp.getData(2);
-		}
+		if(d == null)d = sp.getData(1);
 		r.renderSection(d, dx, dy, 8);
 	}
 

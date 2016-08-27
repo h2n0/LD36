@@ -31,6 +31,7 @@ public class Animation {
 			int x = cords[i];
 			int y = cords[i + 1];
 			this.data[frame] = this.sp.getData(x, y); 
+			frame++;
 		}
 	}
 	

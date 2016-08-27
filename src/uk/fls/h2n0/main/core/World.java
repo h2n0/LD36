@@ -93,11 +93,21 @@ public class World {
 			int tx = i % this.w;
 			int ty = i / this.w;
 			
+			
+			
 			if(c == 0xFFFFFF){
 				setTile(tx, ty, Tile.floor);
 			}else{
 				setTile(tx, ty, Tile.none);
 			}
+		}
+		
+		
+		
+		// Gonna go over the tiles and change some of them
+		for(int i = 0; i < this.tiles.length; i++){
+			int tx = i % this.w;
+			int ty = i / this.w;
 		}
 	}
 }

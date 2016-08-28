@@ -4,6 +4,8 @@ import java.util.List;
 
 import fls.engine.main.util.Point;
 import fls.engine.main.util.Renderer;
+import uk.fls.h2n0.main.core.tiles.BossDoor;
+import uk.fls.h2n0.main.core.tiles.Tile;
 import uk.fls.h2n0.main.util.Animation;
 import uk.fls.h2n0.main.util.AnimationManager;
 
@@ -16,6 +18,10 @@ public class Player extends Entity {
 	boolean xFlip;
 	public int gemsFound;
 	public int score;
+	
+	private Point target;
+	private float range;
+	private int delay;
 
 	public Player(int x, int y) {
 		this.frameData = this.sp.getData(0);
@@ -27,11 +33,25 @@ public class Player extends Entity {
 		this.anim = this.am.getAnimation("walkLR");
 		this.xFlip = false;
 		this.speed = 0.75f;
+		this.target = Point.zero;
+		this.health = 4;
+		this.range = 10;
+		this.delay = 0;
 	}
 
 	@Override
 	public void render(Renderer r) {
 		r.renderSection(frameData, this.pos.getIX(), this.pos.getIY(), 8, this.xFlip ? r.xFlip : 0);
+		
+		if(this.target != Point.zero){
+			int tx = this.pos.getIX() + this.target.getIX() + 4;
+			int ty = this.pos.getIY() + this.target.getIY() + 4;
+			Point p = new Point(this.pos.getIX() + 4, this.pos.getIY() + 4);
+			float ang = getAngle(p, target);
+			float dx = (float)Math.cos(ang) * this.range;
+			float dy = (float)Math.sin(ang) * this.range;
+			r.setPixel(p.getIX() + (int)dx, p.getIY() + (int)dy, 255 << 16);
+		}
 	}
 
 	@Override
@@ -54,11 +74,13 @@ public class Player extends Entity {
 				}
 			}
 		}
+		
+		if(this.delay > 0)this.delay--;
 	}
 
-	public void move(int x, int y) {
+	public boolean move(float x, float y) {
 		if (x == 0 && y == 0)
-			return;
+			return false;
 
 		if (y < 0) {
 			this.anim = this.am.getAnimation("walkU");
@@ -75,22 +97,50 @@ public class Player extends Entity {
 				xFlip = false;
 		}
 		
-		super.move(x, y);
 		this.steps++;
 		if (steps % 12 == 0) {
 			this.anim.nextFrame();
 			this.frameData = this.anim.getFrame();
 		}
+		
+		boolean m = super.move(x, y);
+		if(m){
+			int tx = (this.pos.getIX()+4)/8;
+			int ty = (this.pos.getIY()+4)/8;
+			if(this.world.getTile(tx, ty) == Tile.bossDoor){
+				BossDoor b = (BossDoor)this.world.getTile(tx, ty);
+				b.activate();
+			}
+		}
+		
+		return m;
 	}
 	
 	public void action(){
-		this.world.addEntity(new ScoreGem(this.pos.getIX(), this.pos.getIY() - 8));
+		if(this.target == Point.zero || delay > 0 || this.gemsFound == 0)return;
+		Point p = new Point(this.pos.getIX(), this.pos.getIY());
+		float ang = getAngle(p, target);
+		float dx = (float)Math.cos(ang) * this.range;
+		float dy = (float)Math.sin(ang) * this.range;
+		this.world.addEntity(new FireBall((int)(p.x + dx), (int)(p.y + dy), ang));
+		this.delay = 20;
+	}
+	
+	public void aim(float ax, float ay){
+		if(ax == 0f && ay == 0f)this.target = Point.zero;
+		else this.target = new Point(ax,ay);
 	}
 	
 	private void collectMainGem(){
 		this.gemsFound++;
 		this.world.updateGemCount();
-		this.world.showPopup("Gem found", 60);
+		this.world.showPopup("Gem found", 60 * 2);
+	}
+	
+	private float getAngle(Point origin, Point target){
+		float ax = origin.x - target.x;
+		float ay = origin.y - target.y;
+		return (float)Math.atan2(origin.y - ay, origin.x - ax);
 	}
 
 }

@@ -13,6 +13,7 @@ import uk.fls.h2n0.main.core.entity.Decoration;
 import uk.fls.h2n0.main.core.entity.Entity;
 import uk.fls.h2n0.main.core.entity.Gem;
 import uk.fls.h2n0.main.core.entity.Player;
+import uk.fls.h2n0.main.core.tiles.BossDoor;
 import uk.fls.h2n0.main.core.tiles.DoorTile;
 import uk.fls.h2n0.main.core.tiles.Tile;
 import uk.fls.h2n0.main.util.Font;
@@ -28,6 +29,8 @@ public class World {
 	private int popupYOff = 0;
 	private String popupMesg;
 	private List<Entity> entitys;
+	private List<Entity> entitysToAdd;
+	private List<Entity> entitysToRemove;
 
 	public World() {
 		loadWorld();
@@ -64,7 +67,7 @@ public class World {
 
 	public void addEntity(Entity e) {
 		e.world = this;
-		this.entitys.add(e);
+		this.entitysToAdd.add(e);
 	}
 
 	public void update(Camera cam) {
@@ -72,7 +75,7 @@ public class World {
 		while(it.hasNext()){
 			Entity e = it.next();
 			e.update();
-			if(!e.isAlive())it.remove();
+			if(!e.isAlive())this.entitysToRemove.add(e);
 		}
 
 		
@@ -94,6 +97,8 @@ public class World {
 		}else{
 			this.popupTime--;
 		}
+		
+		processEntitys();
 	}
 
 	public void render(Renderer r, Camera cam) {
@@ -133,6 +138,8 @@ public class World {
 		this.tiles = new Tile[w * h];
 		this.data = new byte[w * h];
 		this.entitys = new ArrayList<Entity>();
+		this.entitysToAdd = new ArrayList<Entity>();
+		this.entitysToRemove = new ArrayList<Entity>();
 		img.getRGB(0, 0, w, h, pixels, 0, h);
 		for (int i = 0; i < pixels.length; i++) {
 			int c = (pixels[i] & 0xFFFFFF);
@@ -158,6 +165,20 @@ public class World {
 				int doorNumber = c & 0x0000FF;
 				setTile(tx, ty, Tile.door);
 				setData(tx,ty, doorNumber);
+			}else if(c == 0xFF9900){
+				setTile(tx,ty, Tile.wall);
+			}else if(c >= 0xCC00CC && c <= 0xCC00CE){//Mini boss door
+				setTile(tx, ty, Tile.bossDoor);
+				int value = c & 0x0000FF;
+				value -= 203;
+				setData(tx, ty, value);
+				//System.out.println(value);
+			}else if(c == 0xCC0000){//Mini boss spawn point
+				setTile(tx, ty, Tile.floor);
+			}else if(c >= 0x0100CC){// Mini boss door trigger
+				setTile(tx, ty, Tile.bossDoorTrigger);
+				int value = c >> 16;
+				setData(tx, ty, value);
 			}
 		}
 
@@ -178,6 +199,19 @@ public class World {
 				}
 			}
 		}
+	}
+	
+	private void processEntitys(){
+		for(Entity e : this.entitysToRemove){
+			this.entitys.remove(e);
+		}
+		
+		for(Entity e : this.entitysToAdd){
+			this.entitys.add(e);
+		}
+		
+		this.entitysToAdd.clear();
+		this.entitysToRemove.clear();
 	}
 	
 	public List<Entity> getEntitysAround(Entity checker){
@@ -213,6 +247,20 @@ public class World {
 				int ty = i / this.w;
 				int val = getData(tx,ty);
 				setData(tx, ty, val-1);
+			}
+		}
+	}
+	
+	
+	public void triggerBossDoors(int num){
+		for(int i = 0; i < this.tiles.length; i++){
+			int tx = i % this.w;
+			int ty = i / this.w;
+			Tile t = this.tiles[i];
+			if(t instanceof DoorTile){
+				if(this.getData(tx, ty) == num){
+					((BossDoor)t).activate();
+				}
 			}
 		}
 	}

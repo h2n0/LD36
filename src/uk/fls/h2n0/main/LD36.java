@@ -5,20 +5,20 @@ import fls.engine.main.input.Input;
 import uk.fls.h2n0.main.screens.GameScreen;
 
 @SuppressWarnings("serial")
-public class LD37 extends Init{
+public class LD36 extends Init{
 
 	public static int w = 160;
 	public static int h = 144;
 	public static int s = 3;
 	
-	public LD37(){
-		super("LD 37 Entry Controller HUI", w * s, h * s);
+	public LD36(){
+		super("LD 36", w * s, h * s);
 		useCustomBufferedImage(w, h, false);
-		setInput(new Input(this, Input.KEYS, Input.CONTROLLER));
+		setInput(new Input(this, Input.KEYS,Input.MOUSE, Input.CONTROLLER));
 		setScreen(new GameScreen());
 	}
 	
 	public static void main(String[] args){
-		new LD37().start();
+		new LD36().start();
 	}
 }

@@ -21,10 +21,10 @@ public class FallingDoor extends Tile {
 	@Override
 	public void update(World w, int tx, int ty) {
 		int val = w.getData(tx, ty);
-		if(val > 40){
+		if(val > 60){
+			if(anim.getFrameNumber() == 3)w.setTile(tx, ty, Tile.floor);
 			anim.nextFrame();
 			w.setData(tx, ty, 0);
-			if(anim.getFrameNumber() == 3)w.setTile(tx, ty, Tile.floor);
 		}else{
 			w.setData(tx, ty, val + 1);
 		}

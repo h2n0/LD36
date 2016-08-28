@@ -17,12 +17,13 @@ public abstract class Entity {
 	
 	protected Point targetPoint = Point.zero;
 	protected SpriteParser sp = new SpriteParser(FileIO.instance.readInternalFile("/entitys/data1.art"));
+	protected int health = 1;
 
 	public abstract void render(Renderer r);
 
 	public abstract void update();
 
-	public void move(int dx, int dy) {
+	public boolean move(float dx, float dy) {
 		float nx = this.pos.x - dx;
 		float ny = this.pos.y - dy;
 
@@ -44,9 +45,12 @@ public abstract class Entity {
 		int nty = (int)this.pos.y + yPadding;
 
 		Tile t = this.world.getTile(ntx/8, nty/8); 
-		if(t == null)return;
-		if (!t.blocksMovment)
+		if(t == null)return false;
+		if (!t.blocksMovment){
 			this.pos.setPos(npx, npy);
+			return true;
+		}
+		return false;
 	}
 
 	public Point getPos() {

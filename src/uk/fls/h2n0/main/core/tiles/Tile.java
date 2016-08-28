@@ -13,6 +13,8 @@ public abstract class Tile {
 	public static Tile wall = new WallTile();
 	public static Tile door = new DoorTile();
 	public static Tile fallingDoor = new FallingDoor();
+	public static Tile bossDoor = new BossDoor();
+	public static Tile bossDoorTrigger = new BossDoorTrigger();
 
 	public boolean blocksMovment;
 	

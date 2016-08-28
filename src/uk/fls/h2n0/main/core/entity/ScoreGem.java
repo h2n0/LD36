@@ -7,40 +7,44 @@ import fls.engine.main.util.Point;
 public class ScoreGem extends Gem{
 
 	private int weight;
-	private float speed = 0;
 	private boolean shouldFloat = false;
+	private int idleTime = 0;
 	
 	public ScoreGem(int x, int y) {
 		super(x, y);
 		this.frameData = sp.getData(7);
 		this.shadowWidth = 2;
 		this.weight = (int)(Math.random() * 5);
+		this.idleTime = 60;
 	}
 	
 	public void update(){
 		super.update();
 		
-		List<Entity> ents = this.world.getEntitysAround(this, 16 + this.weight * 4);
-		for(Entity e : ents){
-			if(e instanceof ScoreGem){
-				ScoreGem e2 = (ScoreGem)e;
-				float dist = e2.pos.dist(pos);
-				if(e2.getWeight() < this.weight){
-					if(dist < 2){
-						e2.alive = false;
-						this.weight++;
-						this.color = genColor();
+		if(this.idleTime > 0)this.idleTime--;
+		else{
+			List<Entity> ents = this.world.getEntitysAround(this, 16 + this.weight * 4);
+			for(Entity e : ents){
+				if(e instanceof ScoreGem){
+					ScoreGem e2 = (ScoreGem)e;
+					float dist = e2.pos.dist(pos);
+					if(e2.getWeight() < this.weight){
+						if(dist < 2){
+							e2.alive = false;
+							this.weight++;
+							this.color = genColor();
+						}
+					}else if(e2.getWeight() >= this.weight){
+						floatToward(e2.pos);
 					}
-				}else if(e2.getWeight() >= this.weight){
-					floatToward(e2.pos);
 				}
 			}
-		}
-		
-		if(this.shouldFloat){
-			speed += 0.0005f;
-			float max = 0.2f;
-			if(speed > max)this.speed = max;
+			
+			if(this.shouldFloat){
+				speed += 0.0005f / this.weight;
+				float max = 0.2f;
+				if(speed > max)this.speed = max;
+			}
 		}
 	}
 	
@@ -49,8 +53,9 @@ public class ScoreGem extends Gem{
 	}
 	
 	public void floatToward(Point p){
-		this.pos.x += (p.x-this.pos.x) * speed;
-		this.pos.y += (p.y-this.pos.y) * speed;
+		//this.pos.x += (p.x-this.pos.x) * speed;
+		//this.pos.y += (p.y-this.pos.y) * speed;
+		move((p.x-this.pos.x), (p.y-this.pos.y));
 		this.shouldFloat = true;
 	}
 

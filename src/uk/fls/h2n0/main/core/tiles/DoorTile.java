@@ -23,7 +23,9 @@ public class DoorTile extends Tile {
 
 	@Override
 	public void update(World w, int tx, int ty) {
-		
+		if(w.getData(tx, ty) == 0){
+			w.setTile(tx, ty, new FallingDoor());
+		}
 	}
 
 }

@@ -13,7 +13,9 @@ import uk.fls.h2n0.main.core.entity.Decoration;
 import uk.fls.h2n0.main.core.entity.Entity;
 import uk.fls.h2n0.main.core.entity.Gem;
 import uk.fls.h2n0.main.core.entity.Player;
+import uk.fls.h2n0.main.core.tiles.DoorTile;
 import uk.fls.h2n0.main.core.tiles.Tile;
+import uk.fls.h2n0.main.util.Font;
 
 public class World {
 
@@ -22,7 +24,9 @@ public class World {
 	public int w, h;
 	
 	private int px, py;
-
+	private int popupTime = 0;
+	private int popupYOff = 0;
+	private String popupMesg;
 	private List<Entity> entitys;
 
 	public World() {
@@ -34,11 +38,21 @@ public class World {
 			return;
 		this.tiles[x + y * this.w] = nt;
 	}
+	
+	public Tile getTile(int x, int y) {
+		if (!isValid(x, y))return Tile.none;
+		return this.tiles[x + y * this.w];
+	}
 
 	public void setData(int x, int y, int nv) {
 		if (!isValid(x, y))
 			return;
 		this.data[x + y * this.w] = (byte) nv;
+	}
+	
+	public int getData(int x,int y){
+		if(!isValid(x, y))return -1;
+		return this.data[x + y * this.w];
 	}
 
 	private boolean isValid(int x, int y) {
@@ -48,22 +62,37 @@ public class World {
 			return true;
 	}
 
-	public Tile getTile(int x, int y) {
-		if (!isValid(x, y))return Tile.none;
-		return this.tiles[x + y * this.w];
-	}
-
 	public void addEntity(Entity e) {
 		e.world = this;
 		this.entitys.add(e);
 	}
 
-	public void update() {
+	public void update(Camera cam) {
 		Iterator<Entity> it = this.entitys.iterator();
 		while(it.hasNext()){
 			Entity e = it.next();
 			e.update();
 			if(!e.isAlive())it.remove();
+		}
+
+		
+		int mx = cam.pos.getIX() / 8;
+		int max = cam.w;
+
+		int[] d = new int[8 * 8];
+		int my = cam.pos.getIY() / 8;
+		int may = cam.w;
+		for (int x = mx - 1; x <= mx + max; x++) {
+			for (int y = my - 1; y <= my + may; y++) {
+				Tile t = getTile(x, y);
+				if (t != null)t.update(this, x, y);
+			}
+		}
+		
+		if(this.popupTime < 0 && this.popupYOff > 0){
+			popupYOff --;
+		}else{
+			this.popupTime--;
 		}
 	}
 
@@ -88,7 +117,12 @@ public class World {
 		for (Entity e : entitys) {
 			e.render(r);
 		}
+		
 		r.setOffset(0, 0);
+		
+		if(this.popupYOff > 0){
+			Font.drawString(r, this.popupMesg, (160-(this.popupMesg.length()*8))/2, 144 - this.popupYOff);
+		}
 	}
 
 	public void loadWorld() {
@@ -120,8 +154,10 @@ public class World {
 				setTile(tx, ty, Tile.floor);
 				this.px = tx * 8;
 				this.py = ty * 8;
-			}else if(c == 0x00FF00){
+			}else if(c >= 0x00FF00 && c < 0x00FFFF){
+				int doorNumber = c & 0x0000FF;
 				setTile(tx, ty, Tile.door);
+				setData(tx,ty, doorNumber);
 			}
 		}
 
@@ -161,5 +197,23 @@ public class World {
 	
 	public Player getPlayer(){
 		return new Player(this.px, this.py);
+	}
+	
+	public void showPopup(String msg, int time){
+		this.popupTime = time;
+		this.popupMesg = msg;
+		this.popupYOff = 24; 
+	}
+	
+	public void updateGemCount(){
+		for(int i = 0; i < this.tiles.length; i++){
+			Tile t = this.tiles[i];
+			if(t instanceof DoorTile){
+				int tx = i % this.w;
+				int ty = i / this.w;
+				int val = getData(tx,ty);
+				setData(tx, ty, val-1);
+			}
+		}
 	}
 }

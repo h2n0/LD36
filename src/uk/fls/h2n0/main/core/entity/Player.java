@@ -50,7 +50,7 @@ public class Player extends Entity {
 				Gem g = (Gem)e;
 				if(g.pos.dist(this.pos) < 16 * 16){
 					g.alive = false;
-					this.gemsFound++;
+					collectMainGem();
 				}
 			}
 		}
@@ -85,6 +85,12 @@ public class Player extends Entity {
 	
 	public void action(){
 		this.world.addEntity(new ScoreGem(this.pos.getIX(), this.pos.getIY() - 8));
+	}
+	
+	private void collectMainGem(){
+		this.gemsFound++;
+		this.world.updateGemCount();
+		this.world.showPopup("Gem found", 60);
 	}
 
 }

@@ -61,6 +61,7 @@ public class GameScreen extends Screen {
 		
 		if(!this.controllerInUse && this.input.getController() != null){
 			this.inputDelay = 10;
+			this.w.showPopup("Controller added", 60 * 2);
 			this.controllerInUse = true;
 		}
 		
@@ -96,7 +97,7 @@ public class GameScreen extends Screen {
 				this.inputDelay = 10;
 			}
 		}else{
-			this.w.update();
+			this.w.update(this.cam);
 			int xOff = 0;
 			int yOff = 0;
 			if(up)yOff--;
@@ -137,9 +138,5 @@ public class GameScreen extends Screen {
 		}else{
 			this.w.render(r, cam);
 		}
-	}
-	
-	public void showPopup(String msg, int time){
-		Font.drawString(r, msg, (160-(msg.length()*8))/2, 100);
 	}
 }

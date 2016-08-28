@@ -48,4 +48,8 @@ public class Animation {
 	public void nextFrame(){
 		this.currentFrame = (this.currentFrame + 1) % this.data.length;
 	}
+	
+	public int getFrameNumber(){
+		return this.currentFrame;
+	}
 }

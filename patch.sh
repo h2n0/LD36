@@ -12,7 +12,7 @@ zip nat.zip *
 mv nat.zip ~/Documents/Butler/build/natives
 cd ~/Documents/Butler
 mv LD37.jar build/LD37.jar
-cp run.x86 build/run.x86
+cp run.sh build/run.sh
 cp .itch.toml build/.itch.toml
 unzip ~/Documents/Butler/build/natives/nat.zip -d ~/Documents/Butler/build/natives/
 ./butler diff -v /dev/null ./build
